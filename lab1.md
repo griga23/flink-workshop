@@ -33,12 +33,18 @@ WITH (
   'fields.timestamp.expression' = '#{date.past ''5'',''SECONDS''}',
   'rows-per-second' = '3')
 ```
+
+Understand how table is created.
+
 `SELECT * from transactions_faker`
 
 `SHOW CREATE TABLE transactions_faker`
 
+Check watermark value.
+
 `DESCRIBE EXTENDED transactions_faker`
 
+In case you need to recreate the table you can always drop it. 
 `DROP TABLE transactions_faker`
 
 
@@ -68,6 +74,8 @@ WITH (
 ```
 `SELECT * from customers_faker`
 
+Verify the physical plan for the CTAS query.
+
 ```
 EXPLAIN 
 CREATE TABLE customers_pk (
@@ -78,8 +86,11 @@ CREATE TABLE customers_pk (
 AS SELECT * FROM `customers_faker`
 ```
 
+Create a new table with primary key derived from the append table.
+Set idle timeout for all partitions
 
 ```
+SET 'sql.tables.scan.idle-timeout' = '1s';
 CREATE TABLE customers_pk (
   PRIMARY KEY(account_number) NOT ENFORCED,
   WATERMARK FOR `created_at` AS `created_at`  - INTERVAL '5' SECONDS
@@ -92,4 +103,43 @@ AS SELECT * FROM `customers_faker`
 
 `DESCRIBE EXTENDED customers_pk`
 
+Switch to changelog mode output. 
+
 `SELECT * from customers_pk`
+
+Add some metadata.
+
+```
+ALTER TABLE customers_pk ADD (
+record_headers MAP<STRING, BYTES> METADATA FROM 'headers',
+  record_leader_epoch INT METADATA FROM 'leader-epoch',
+  record_offset BIGINT METADATA FROM 'offset',
+  record_partition INT METADATA FROM 'partition',
+  record_key BYTES METADATA FROM 'raw-key',
+  record_value BYTES METADATA FROM 'raw-value',
+  record_timestamp TIMESTAMP_LTZ(3) METADATA FROM 'timestamp',
+  record_timestamp_type STRING METADATA FROM 'timestamp-type',
+  record_topic STRING METADATA FROM 'topic'
+);
+```
+`DESCRIBE EXTENDED customers_pk`
+
+`SELECT * from customers_pk`
+
+Change the changelog mode to Append
+
+``ALTER TABLE `customers_pk` SET ('changelog.mode' = 'append');``
+
+`SELECT * from customers_pk`
+
+Change it back to Upsert
+
+``ALTER TABLE `customers_pk` SET ('changelog.mode' = 'upsert');``
+
+Change isolation level to read uncommitted data. 
+
+``ALTER TABLE `customers_pk` SET ('kafka.consumer.isolation-level'='read-uncommitted')``
+
+`SELECT * from customers_pk`
+
+
