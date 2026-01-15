@@ -112,3 +112,106 @@ FROM customers_faker,
   )
 ```
 https://docs.confluent.io/cloud/current/ai/external-tables/key-search.html#key-search-with-mongodb
+
+#### GROUP BY
+
+Select customers with sum of transactions larger than 500
+```
+SELECT 
+  account_number,
+  transaction_type,
+  SUM(amount) 
+FROM `transactions_faker` 
+WHERE transaction_type = 'withdrawal' 
+GROUP BY account_number,transaction_type
+HAVING SUM(amount) > 500
+```
+
+#### OVER()
+Select customers with sum of transactions larger than 500 and show row updates.
+```
+SELECT
+    `account_number`,
+    transaction_type,
+    amount,
+    SUM(amount) OVER w as total_value,
+    CASE WHEN SUM(amount) OVER  w  > '500' THEN 'YES' ELSE 'NO' END AS FLAG
+FROM `transactions_faker`
+WHERE transaction_type = 'withdrawal'
+WINDOW w AS (
+ PARTITION BY account_number,transaction_type
+    ORDER BY `timestamp` ASC
+    RANGE BETWEEN INTERVAL '1' HOUR PRECEDING AND CURRENT ROW)
+```
+
+#### TUMBLE WINDOW GROUP BY
+Count failed transaction in 1 minute intervals for each merchant. 
+Emit results after 1 minute
+```
+SELECT 
+  window_start,
+  window_end,
+  merchant,
+  COUNT(*) AS total_tx_failed
+FROM
+TUMBLE(
+  TABLE `transactions_faker`, 
+  DESCRIPTOR (`timestamp`), 
+  INTERVAL '1' MINUTE
+  )
+WHERE transaction_type ='payment' AND status = 'Failed'
+GROUP BY 
+  window_start, 
+  window_end,
+  merchant
+```
+
+#### TUMBLE WINDOW GROUP BY
+Count failed transaction in 1 minute intervals for each merchant.
+Emit results immediately 
+
+```
+SELECT 
+  `timestamp`,
+  merchant,
+  COUNT(*) OVER w AS total_tx_failed_last_minute
+FROM `transactions_faker`
+WHERE transaction_type = 'payment' AND status = 'Failed'
+WINDOW w AS (
+  PARTITION BY merchant 
+  ORDER BY `timestamp` 
+  RANGE BETWEEN INTERVAL '1' MINUTE PRECEDING AND CURRENT ROW
+);
+```
+
+#### COMBINE GROUP BY and OVER WINDOW
+Phase 1 (Group By): Calculate the count of failed transactions for every merchant per minute.
+Phase 2 (Over): Flink looks at the window results and compares the current count to the previous count using LAG.
+
+```
+SELECT 
+  window_start,
+  window_end,
+  merchant,
+  transaction_type,
+  COUNT(*) as total_failed,
+  LAG(COUNT(*),1) OVER w as prev_total_failed,
+  COUNT(*) - LAG(COUNT(*),1) OVER w as delta
+FROM
+TUMBLE(
+  TABLE `transactions_faker`, 
+  DESCRIPTOR (`timestamp`), 
+  INTERVAL '1' MINUTE
+  )
+WHERE transaction_type ='payment' AND status = 'Successful'
+GROUP BY 
+  window_start, 
+  window_end,
+  window_time,
+  merchant, 
+  transaction_type
+WINDOW w as (
+  PARTITION BY merchant,transaction_type 
+  ORDER BY window_time
+  ) 
+```
