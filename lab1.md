@@ -1,6 +1,6 @@
 # Flink SQL Workshop
 
-### Create initial tables
+### Understanding Flink SQL & Query Execution
 
 Powered by Faker connector https://docs.confluent.io/cloud/current/flink/how-to-guides/custom-sample-data.html
 
