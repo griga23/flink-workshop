@@ -1,9 +1,11 @@
 
 # Lab 4
 
-### Changelog Modes
+### Changelog Modes and Advanced Operators
 
 Use demo data from Lab 1
+
+#### Changelog
 
 Change the changelog mode to Append
 
