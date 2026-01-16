@@ -1,7 +1,7 @@
 
 # Lab 4
 
-### Changelog Modes & Table Semantics
+### Changelog Modes
 
 Use demo data from Lab 1
 
@@ -16,6 +16,8 @@ Change it back to Upsert
 ``ALTER TABLE `customers_pk` SET ('changelog.mode' = 'upsert');``
 
 `SELECT * from customers_pk`
+
+#### Operators examples
 
 Bad query example (Shuffle, ChangelogNormalizer and GroupAggregate)
 Calculate the total spend of every city based on incoming transactions
@@ -48,6 +50,7 @@ FROM (
 WHERE total_spent > 1000
 GROUP BY city;
 ```
+#### Primary key Mismatch
 
 Primary key differs from upsert key
 https://docs.confluent.io/cloud/current/flink/how-to-guides/resolve-common-query-problems.html
@@ -70,6 +73,8 @@ FROM transactions_faker t
 JOIN customers_pk c ON t.account_number = c.account_number
 GROUP BY c.city;
 ```
+
+#### Join vs. Over Window
 
 Join transactions with customer info. Produce Append changelog.
 https://docs.confluent.io/cloud/current/flink/how-to-guides/combine-and-track-most-recent-records.html
