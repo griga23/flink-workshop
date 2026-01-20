@@ -166,7 +166,28 @@ GROUP BY
   merchant
 ```
 
-#### TUMBLE WINDOW GROUP BY
+#### SESSION WINDOW GROUP BY
+Count failed transactions in merchant sessions. Session Gap is 2 seconds
+```
+SELECT
+  window_start,
+  window_end,
+  merchant,
+  COUNT(*) AS total_tx_failed
+FROM
+  SESSION(
+    TABLE `transactions_faker`,
+    DESCRIPTOR(`timestamp`),
+    INTERVAL '2' SECONDS
+  )
+WHERE transaction_type = 'payment' AND status = 'Failed'
+GROUP BY
+  window_start,
+  window_end,
+  merchant;
+```
+
+#### OVER WINDOW 
 Count failed transaction in 1 minute intervals for each merchant.
 Emit results immediately 
 
