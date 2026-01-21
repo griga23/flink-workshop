@@ -166,6 +166,8 @@ GROUP BY
   merchant
 ```
 
+Example of heartbeat pattern https://github.com/charmon79/cc-flink-demos/blob/main/patterns/heartbeat-pattern.md
+
 #### SESSION WINDOW GROUP BY
 Count transactions in merchant sessions. Session Gap is 5 seconds
 ```
