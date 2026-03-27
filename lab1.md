@@ -125,17 +125,6 @@ In particular, we create a `CREATE TABLE AS SELECT` (CTAS) statement which
 1. Creates a new table, and
 2. Populates it with the result of a `SELECT` query
 
-This is the CTAS statement we will execute (⚠️ *do not execute the statement for now*):
-
-```sql
-CREATE TABLE `customers_pk` (
-  PRIMARY KEY(`account_number`) NOT ENFORCED,
-  WATERMARK FOR `created_at` AS `created_at` - INTERVAL '5' SECONDS
-)
-  WITH ('changelog.mode' = 'upsert')
-AS SELECT * FROM `customers_faker`
-```
-
 Before executing it, we want to analyze the query plan using `EXPLAIN`. 
 
 Just prepend `EXPLAIN` to the statement to show the query plan (execute the following SQL):
@@ -172,14 +161,9 @@ Note that nothing really happens with your data when you execute `EXPLAIN`. No t
 
 We will now execute the *CTAS* (*Create Table As Select*) statement we explained in the previous section to create the table representing Customers, using `account_number` as PK.
 
-We also set a short idle timeout (1 sec) for all partitions. 
-We will cover idle partitions in more detail, later in this workshop. For now, just execute this setting as shown.
-
 Execute the following CTAS statement:
 
 ```sql
-SET 'sql.tables.scan.idle-timeout' = '1s';
-
 CREATE TABLE `customers_pk` (
   PRIMARY KEY(`account_number`) NOT ENFORCED,
   WATERMARK FOR `created_at` AS `created_at` - INTERVAL '5' SECONDS
