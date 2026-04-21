@@ -1,3 +1,4 @@
+```mermaid
 graph LR
     %% Main Title
     Root((Apache Flink<br/>Value & Use Cases))
@@ -84,3 +85,4 @@ graph LR
     style CS fill:#e1f5fe,stroke:#01579b;
     style RG fill:#e8f5e9,stroke:#1b5e20;
     style RM fill:#ffebee,stroke:#b71c1c;
+```
