@@ -13,6 +13,7 @@ graph LR
     CS1 --> CS1a("Unified Processing Engine<br/>(One engine for batch and streaming pipelines)")
     CS1 --> CS1b("Elastic Scalability<br/>(Auto-scaling resources to match live data rates)")
     CS1 --> CS1c("State Backend Efficiency<br/>(Offloading massive application state to disk)")
+    CS1 --> CS1d("Mainframe Offloading<br/>(Syncing legacy systems to cloud to cut query costs)")
 
     CS --> CS2[Data Pipeline Reduction]
     CS2 --> CS2a("Streaming ETL<br/>(Cleaning data before expensive warehouse ingestion)")
@@ -34,15 +35,18 @@ graph LR
     RG1 --> RG1b("Live Search Ranking Optimization<br/>(Adjusting search results based on immediate trends)")
     RG1 --> RG1c("Media Dynamic Feeds<br/>(Live content curation based on user engagement)")
     RG1 --> RG1d("Gaming Personalization<br/>(In-game dynamic difficulty and tailored offers)")
+    RG1 --> RG1e("Live Broadcast Interaction<br/>(Real-time polling and feedback for streaming media)")
 
     RG --> RG2[Dynamic Pricing Models]
     RG2 --> RG2a("Ride-Sharing Surge Pricing<br/>(Matching live driver supply with rider demand)")
     RG2 --> RG2b("Retail & Travel Pricing<br/>(Adjusting costs dynamically based on live inventory)")
+    RG2 --> RG2c("Dynamic Risk Assessment<br/>(Adjusting insurance premiums live via telemetry)")
 
     RG --> RG3[Premium Data Products]
     RG3 --> RG3a("Real-Time BI & Dashboards<br/>(Sub-second live metrics for immediate operations)")
     RG3 --> RG3b("A/B Testing & Experiment Analytics<br/>(Instantly evaluating live feature performance)")
     RG3 --> RG3c("Social Network Analysis<br/>(Mapping user connections and graphs on the fly)")
+    RG3 --> RG3d("Customer 360<br/>(Aggregating all data streams into a unified live profile)")
 
     RG --> RG4[Supply Chain Agility]
     RG4 --> RG4a("Omnichannel Inventory<br/>(Preventing stockouts and overselling during flash sales)")
