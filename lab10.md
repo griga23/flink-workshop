@@ -57,7 +57,7 @@ WITH (
   'provider'                = 'googleai',
   'task'                    = 'classification',
   'googleai.connection'     = 'gemini_conn',
-  'googleai.model_version'  = 'gemini-2.0-flash',
+  'googleai.model_version'  = 'gemini-3.6-flash',
   'googleai.system_prompt'  = 'You are a fraud detection model for a retail bank.
 You receive a single line describing a transaction in the format:
   amount:<value>, type:<value>, status:<value>, merchant:<value>
