@@ -31,7 +31,7 @@ A **connection** stores your provider credentials once and is reused across mode
 CREATE CONNECTION gemini_conn
 WITH (
   'type'    = 'googleai',
-  'endpoint' = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+  'endpoint' = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
   'api-key' = '<your-google-ai-api-key>'
 );
 ```
